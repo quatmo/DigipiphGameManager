@@ -190,7 +190,7 @@ window.onload = function() {
       log.appendChild(logDiv);
       log.insertBefore(logDiv, log.firstChild);
     });
-console.log(dgm.keypressObjects);
+
     //start game timer
     if (!createjs.Ticker.hasEventListener("tick")) {
       createjs.Ticker.addEventListener("tick", tick);
