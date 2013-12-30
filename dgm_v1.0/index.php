@@ -34,7 +34,7 @@
 <script type="text/javascript" src="scripts/EaselJS-Collision-Detection/src/ndgmr.Collision.js"></script>
 
 <!-- Digipiph Game Manager Script -->
-<script type="text/javascript" src="scripts/dgm_v0.1.js?<?=time()?>"></script>
+<script type="text/javascript" src="scripts/dgm_1.0.js?<?=time()?>"></script>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -121,7 +121,19 @@ window.onload = function() {
         },
       "collisionObject": true,
       "collisionType": "pixel",
-      "collisionAlphaThreshold": 10
+      "collisionAlphaThreshold": 10,
+      "onCollision": function() {
+        //only allow the collision text once every 5 seconds
+        if (!window.playerCollisionTxt) {
+          var log = document.getElementById('gameLog');
+          var logDiv = document.createElement("div");
+          logDiv.innerHTML = ('Hey! Watch it buddy!');
+          log.appendChild(logDiv);
+          log.insertBefore(logDiv, log.firstChild);
+          window.playerCollisionTxt = true;
+          setTimeout(function(){ window.playerCollisionTxt = false; }, 5000);
+        }
+      }
     };
 
     var map_background_data = {
@@ -148,13 +160,38 @@ window.onload = function() {
       "src": 'images/light-post.png'
     };
 
+    var eventCampfire_data = {
+      "id": "ev_campfire",
+      "x": 420,
+      "y": 63,
+      "src": 'images/32x32_event.png'
+    }
+
     var character = dgm.configSprite(character_sprite_data, gameCanvas);
     var character2 = dgm.configSprite(character2_sprite_data, gameCanvas);
     var map_background = dgm.configImg(map_background_data, gameCanvas);
     var mapObjs = dgm.configImg(mapObjs_data, gameCanvas);
     var light_post = dgm.configImg(lightPost_data, topGameCanvas);
+    var ev_Campfire = dgm.configImg(eventCampfire_data, topGameCanvas);
 
-    //start game timer   
+    //add the "Enter" keypress event for the campfire
+    ev_Campfire.onEventKeypress(13, function() { 
+      var log = document.getElementById('gameLog');
+      var logDiv = document.createElement("div");
+      logDiv.innerHTML = ('It\'s the remains of a campfire.');
+      log.appendChild(logDiv);
+      log.insertBefore(logDiv, log.firstChild);
+    });
+    //add the "Space" keypress event for the campfire
+    ev_Campfire.onEventKeypress(32, function() { 
+      var log = document.getElementById('gameLog');
+      var logDiv = document.createElement("div");
+      logDiv.innerHTML = ('There is nothing interesting here.');
+      log.appendChild(logDiv);
+      log.insertBefore(logDiv, log.firstChild);
+    });
+console.log(dgm.keypressObjects);
+    //start game timer
     if (!createjs.Ticker.hasEventListener("tick")) {
       createjs.Ticker.addEventListener("tick", tick);
     }
@@ -173,3 +210,4 @@ window.onload = function() {
 
 <canvas id="gameCanvas" width="544" height="416" style="position: absolute; top:0; left: 0;"></canvas>
 <canvas id="topGameCanvas" width="544" height="416" style="position: absolute; top:0; left: 0;"></canvas>
+<div id="gameLog" style="position: absolute; top: 417px; width: 536px; height: 75px; overflow: auto;"></div>
